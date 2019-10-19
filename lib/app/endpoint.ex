@@ -3,6 +3,8 @@ defmodule App.Endpoint do
   
   alias App.Router
 
+  require Logger
+
   plug :match
   plug Plug.Parsers, parsers: [:json],
                      pass: ["application/json"],
@@ -17,7 +19,10 @@ defmodule App.Endpoint do
   end
 
   def start_link(_opts) do
-    Plug.Cowboy.http(__MODULE__, [])
+    with {:ok, [port: port] = config} <- config() do
+      Logger.info("Starting server at http://localhost:#{port}/")
+      Plug.Cowboy.http(__MODULE__, [], config)
+    end
   end
 
   forward "/ping", to: Router
@@ -25,4 +30,6 @@ defmodule App.Endpoint do
   match _ do
     send_resp(conn, 404, "Requested page not found!")
   end
+
+  defp config, do: Application.fetch_env(:app, __MODULE__)
 end
