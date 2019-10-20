@@ -7,9 +7,9 @@ defmodule App.Endpoint do
 
   plug Plug.Static,
     at: "/",
-    from: "#{File.cwd!()}/frontend/build",
+    from: :app,
     gzip: false,
-    only: ~w(static css fonts images js favicon.ico robots.txt)
+    only: ~w(static manifest.json css fonts images js favicon.ico robots.txt)
   plug Plug.Logger
   plug Plug.Parsers,
     parsers: [:json],
@@ -37,7 +37,7 @@ defmodule App.Endpoint do
   get "/*path" do
     conn
     |> put_resp_header("content-type", "text/html; charset=utf-8")
-    |> Plug.Conn.send_file(200, "#{File.cwd!()}/frontend/build/index.html")
+    |> Plug.Conn.send_file(200, "#{File.cwd!()}/priv/static/index.html")
   end
 
   match _ do
