@@ -5,10 +5,17 @@ defmodule App.Endpoint do
 
   require Logger
 
+  plug Plug.Static,
+    at: "/",
+    from: "#{File.cwd!()}/frontend/build",
+    gzip: false,
+    only: ~w(static css fonts images js favicon.ico robots.txt)
+  plug Plug.Logger
+  plug Plug.Parsers,
+    parsers: [:json],
+    pass: ["application/json"],
+    json_decoder: Poison
   plug :match
-  plug Plug.Parsers, parsers: [:json],
-                     pass: ["application/json"],
-                     json_decoder: Poison
   plug :dispatch
 
   def child_spec(opts) do
@@ -26,6 +33,12 @@ defmodule App.Endpoint do
   end
 
   forward "/ping", to: Router
+
+  get "/*path" do
+    conn
+    |> put_resp_header("content-type", "text/html; charset=utf-8")
+    |> Plug.Conn.send_file(200, "#{File.cwd!()}/frontend/build/index.html")
+  end
 
   match _ do
     send_resp(conn, 404, "Requested page not found!")
