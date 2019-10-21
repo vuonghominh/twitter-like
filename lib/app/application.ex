@@ -9,6 +9,7 @@ defmodule App.Application do
     children = [
       # Starts a worker by calling: App.Worker.start_link(arg)
       # {App.Worker, arg}
+      App.Repo,
       App.Endpoint
     ]
 

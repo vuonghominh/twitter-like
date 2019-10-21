@@ -24,7 +24,9 @@ defmodule App.MixProject do
     [
       {:cowboy, "~> 2.7"},
       {:poison, "~> 4.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:ecto_sql, "~> 3.2"},
+      {:postgrex, "~> 0.15"}
     ]
   end
 end
