@@ -7,6 +7,7 @@ defmodule App.MixProject do
       version: "0.1.0",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
       deps: deps()
     ]
   end
@@ -26,7 +27,17 @@ defmodule App.MixProject do
       {:poison, "~> 4.0"},
       {:plug_cowboy, "~> 2.0"},
       {:ecto_sql, "~> 3.2"},
-      {:postgrex, "~> 0.15"}
+      {:postgrex, "~> 0.15"},
+      {:bcrypt_elixir, "~> 2.0"}
+    ]
+  end
+
+  # For example, to create, migrate and run the seeds file at once:
+  #     $ mix ecto.setup
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"]
     ]
   end
 end
