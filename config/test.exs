@@ -5,4 +5,6 @@ config :app, App.Repo,
   password: System.get_env("POSTGRES_PASSWORD"),
   database: System.get_env("POSTGRES_DATABASE"),
   hostname: System.get_env("POSTGRES_HOST"),
-  port: System.get_env("POSTGRES_PORT")
+  pool: Ecto.Adapters.SQL.Sandbox
+
+config :logger, level: :warn
