@@ -1,7 +1,7 @@
 defmodule App.Endpoint do
   use Plug.Router
   
-  alias App.Router
+  alias Api.Ping.Router, as: PingRouter
 
   require Logger
 
@@ -32,7 +32,7 @@ defmodule App.Endpoint do
     end
   end
 
-  forward "/ping", to: Router
+  forward "/ping", to: PingRouter
 
   get "/*path" do
     conn

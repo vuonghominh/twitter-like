@@ -1,4 +1,4 @@
-defmodule App.Router do
+defmodule Api.Ping.Router do
   use Plug.Router
 
   plug :match
