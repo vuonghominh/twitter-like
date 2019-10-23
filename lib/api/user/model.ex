@@ -1,6 +1,8 @@
 defmodule Api.User.Model do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use Api, :model
+
+  alias App.Repo
+  alias __MODULE__
 
   schema "users" do
     field :email, :string
@@ -10,7 +12,21 @@ defmodule Api.User.Model do
     timestamps()
   end
 
-  def changeset(user, attrs) do
+  @doc """
+  Creates a user.
+  ## Examples
+      iex> create_user(%{field: value})
+      {:ok, %Schema{}}
+      iex> create_user(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+  """
+  def create_user(attrs \\ %{}) do
+    %Model{}
+    |> changeset(attrs)
+    |> Repo.insert()
+  end
+
+  defp changeset(user, attrs) do
     user
     |> cast(attrs, [:email,:password])
     |> validate_required([:email, :password])

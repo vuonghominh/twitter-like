@@ -1,18 +1,11 @@
 defmodule Api.Ping.Router do
-  use Plug.Router
-
-  plug :match
-  plug :dispatch
+  use Api, :router
+  alias Api.Ping.Controller
 
   get "/" do
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, Poison.encode!(message()))
-  end
-
-  defp message do
-    %{
-      message: "pong"
-    }
+    Controller.index(conn)
+    # conn
+    # |> put_resp_content_type("application/json")
+    # |> send_resp(200, Poison.encode!(%{ message: "pong" }))
   end
 end

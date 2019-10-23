@@ -2,6 +2,8 @@ defmodule App.ConnCase do
   use ExUnit.CaseTemplate
   use Plug.Test
 
+  @opts App.Endpoint.init([])
+
   using do
     quote do
       import App.DataCase
@@ -14,6 +16,6 @@ defmodule App.ConnCase do
   end
 
   def get(path) do
-    conn(:get, path) |> App.Endpoint.call([])
+    conn(:get, path) |> App.Endpoint.call(@opts)
   end
 end
