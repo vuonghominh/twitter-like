@@ -1,19 +1,22 @@
 defmodule Api.Auth.Controller do
   use Api, :controller
-  alias Api.Auth.Service
-  alias Api.User.Service, as: UserService
+  import Api.Auth.Service, only: [authenticate: 2, valid_totp_code?: 2, generate_totp_code: 1]
+  import Api.User.Service, only: [generate_auth_token: 1]
 
   def login(conn) do
     params = strong_params(conn.body_params, [:email, :password, :code])
-    case params do
-      %{email: nil} -> conn |> json_response(400, "error", %{email: "is required"})
-      %{password: nil} -> conn |> json_response(400, "error", %{password: "is required"})
-      %{email: email, password: password, code: code} when is_nil(code) ->
-        case Service.authenticate(email, password) do
-          {:ok, user} -> conn |> json_response(200, "ok", %{code: UserService.generate_totp_code(user)})
-          {:error, message} -> conn |> json_response(401, message)
+    {status, message, data} = case params do
+      %{email: nil} -> {400, "error", %{email: "is required"}}
+      %{password: nil} -> {400, "error", %{password: "is required"}}
+      %{email: email, password: password, code: code} -> case authenticate(email, password) do
+        {:error, message} -> {401, message, nil}
+        {:ok, user} when is_nil(code) -> {200, "ok", %{code: generate_totp_code(user)}}
+        {:ok, user} -> case valid_totp_code?(user, code) do
+          false -> {401, "unauthorized", nil}
+          true -> {200, "ok", %{token: generate_auth_token(user)}}
         end
-      _ -> conn |> json_response(401, "token")
+      end
     end
+    conn |> json_response(status, message, data)
   end
 end

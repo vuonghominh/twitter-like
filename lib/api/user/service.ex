@@ -17,16 +17,34 @@ defmodule Api.User.Service do
   end
 
   @doc """
-  Returns the current interval TOTP code for a given user.
+  Updates a user.
   ## Examples
-      iex> generate_totp_code(user)
-      473820
+      iex> update_user(user, %{field: new_value})
+      {:ok, %User{}}
+      iex> update_user(user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
   """
-  def generate_totp_code(%User{otp_secret: secret}) do
-    :pot.totp(secret)
+  def update_user(%User{} = user, attrs) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
   end
 
-  def valid_totp_code?(%User{otp_secret: secret}, token) do
-    :pot.valid_totp(token, secret)
+  def get_user_by_id(id), do: Repo.get(User, id)
+
+  def generate_auth_token(user) do
+    token = generate_unique_auth_token(user)
+    case update_user(user, %{auth_tokens: [token | user.auth_tokens]}) do
+      {:error, _} -> nil
+      _ -> token
+    end
+  end
+  defp generate_unique_auth_token(user) do
+    {:ok, token, _} = Map.take(user, [:id]) |> App.Guardian.encode_and_sign()
+    if Enum.member?(user.auth_tokens, token) do
+      generate_unique_auth_token(user)
+    else
+      token
+    end
   end
 end

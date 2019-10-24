@@ -14,7 +14,7 @@ defmodule Helper.Controller do
   def strong_params(params, accepted) do
     Enum.reduce(accepted, %{}, fn(key, acc) -> 
       value = Map.get(params, Atom.to_string(key)) 
-      acc = Map.put(acc, key, value)
+      Map.put(acc, key, value)
     end)
   end
 end

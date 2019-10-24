@@ -34,7 +34,8 @@ defmodule App.MixProject do
       {:ecto_sql, "~> 3.2"},
       {:postgrex, "~> 0.15"},
       {:bcrypt_elixir, "~> 2.0"},
-      {:pot, "~> 0.10.1"}
+      {:pot, "~> 0.10.1"},
+      {:guardian, "~> 1.2"}
     ]
   end
 

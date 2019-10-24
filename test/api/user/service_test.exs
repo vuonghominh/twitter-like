@@ -19,12 +19,9 @@ defmodule Api.User.ServiceTest do
     end
   end
 
-  describe "generate_totp_code/1 & valid_totp_code?/2" do
-    test "return a TOTP code" do
-      {:ok, %Model{} = user} = Service.create_user(@valid_attrs)
-      code = Service.generate_totp_code(user)
-      assert code != nil
-      assert Service.valid_totp_code?(user, code) == true
-    end
+  test "generate_auth_token/1 returns a token" do
+    {:ok, %Model{} = user} = Service.create_user(@valid_attrs)
+    token = Service.generate_auth_token(user)
+    assert token != nil
   end
 end

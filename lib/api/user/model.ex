@@ -6,14 +6,15 @@ defmodule Api.User.Model do
     field :password, :string, virtual: true
     field :password_hash, :string
     field :otp_secret, :string
+    field :auth_tokens, {:array, :string}, default: []
 
     timestamps()
   end
 
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password, :otp_secret])
-    |> validate_required([:email, :password])
+    |> cast(attrs, [:email, :password, :otp_secret, :auth_tokens])
+    |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> secure_password()

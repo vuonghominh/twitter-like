@@ -45,7 +45,18 @@ defmodule Api.Auth.ItTest do
       assert is_binary(code)
     end
 
-    test "response user when user credentials and OTP code are good", %{user: user} do
+    test "responses unauthorized error when OTP code is not good" do
+      credentials = %{
+        email: @current_user_attrs.email,
+        password: @current_user_attrs.password
+      }
+      post("/api/auth/login", credentials)
+      conn = post("/api/auth/login", Map.put(credentials, :code, "1234"))
+      assert conn.status == 401
+      assert response_json(conn.resp_body) == %{"message" => "unauthorized"}
+    end
+
+    test "response user when user credentials and OTP code are good" do
       credentials = %{
         email: @current_user_attrs.email,
         password: @current_user_attrs.password
@@ -53,8 +64,9 @@ defmodule Api.Auth.ItTest do
       conn = post("/api/auth/login", credentials)
       %{"data" => %{ "code" => code }} = response_json(conn.resp_body)
       conn = post("/api/auth/login", Map.put(credentials, :code, code))
-      assert conn.status == 401
-      assert response_json(conn.resp_body) == %{"message" => "token"}
+      assert conn.status == 200
+      %{"data" => %{ "token" => token }} = response_json(conn.resp_body)
+      assert token != nil
     end
   end
 

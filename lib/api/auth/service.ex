@@ -15,6 +15,26 @@ defmodule Api.Auth.Service do
     }
   end
 
+  @doc """
+  Returns the current interval TOTP code for a given user.
+  ## Examples
+      iex> generate_totp_code(user)
+      473820
+  """
+  def generate_totp_code(%User{otp_secret: secret}) do
+    :pot.totp(secret)
+  end
+
+  @doc """
+  Returns true if OTP code is valid
+  ## Examples
+      iex> valid_totp_code?(user, 473820)
+      true
+  """
+  def valid_totp_code?(%User{otp_secret: secret}, token) do
+    :pot.valid_totp(token, secret)
+  end
+
   defp verify_password(nil, _) do
     Bcrypt.no_user_verify()
     {:error, "email_and_password_do_not_match"}
