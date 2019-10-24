@@ -33,7 +33,8 @@ defmodule App.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:ecto_sql, "~> 3.2"},
       {:postgrex, "~> 0.15"},
-      {:bcrypt_elixir, "~> 2.0"}
+      {:bcrypt_elixir, "~> 2.0"},
+      {:pot, "~> 0.10.1"}
     ]
   end
 

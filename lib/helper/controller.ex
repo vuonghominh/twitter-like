@@ -10,4 +10,11 @@ defmodule Helper.Controller do
       |> put_resp_content_type("application/json")
       |> send_resp(status, Poison.encode!(resp_body))
   end
+
+  def strong_params(params, accepted) do
+    Enum.reduce(accepted, %{}, fn(key, acc) -> 
+      value = Map.get(params, Atom.to_string(key)) 
+      acc = Map.put(acc, key, value)
+    end)
+  end
 end

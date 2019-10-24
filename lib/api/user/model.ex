@@ -5,17 +5,19 @@ defmodule Api.User.Model do
     field :email, :string
     field :password, :string, virtual: true
     field :password_hash, :string
+    field :otp_secret, :string
 
     timestamps()
   end
 
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email,:password])
+    |> cast(attrs, [:email, :password, :otp_secret])
     |> validate_required([:email, :password])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> secure_password()
+    |> init_otp_secret()
   end
 
   defp secure_password(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
@@ -24,5 +26,16 @@ defmodule Api.User.Model do
 
   defp secure_password(changeset) do
     changeset
+  end
+
+  defp init_otp_secret(changeset) do
+    case get_change(changeset, :otp_secret) do
+      v when v in [nil,""] -> put_change(changeset, :otp_secret, generate_otp_secret())
+      _ -> changeset
+    end
+  end
+
+  defp generate_otp_secret do
+    :crypto.strong_rand_bytes(10) |> Base.encode32()
   end
 end

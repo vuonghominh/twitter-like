@@ -18,12 +18,11 @@ defmodule Api.Auth.ItTest do
     test "responses error" do
       conn = post("/api/auth/login")
       assert conn.state == :sent
-      assert conn.status == 403
+      assert conn.status == 400
       assert response_json(conn.resp_body) == %{
         "message" => "error",
         "data" => %{
-          "email" => ["can't be blank"],
-          "password" => ["can't be blank"]
+          "email" => "is required"
         }
       }
     end
@@ -35,20 +34,27 @@ defmodule Api.Auth.ItTest do
       assert response_json(conn.resp_body) == %{"message" => "email_and_password_do_not_match"}
     end
 
-    test "responses user when user credentials are good", %{user: user} do
+    test "responses OTP code when user credentials are good" do
       conn = post("/api/auth/login", %{
         email: @current_user_attrs.email,
         password: @current_user_attrs.password
       })
+      %{"data" => %{ "code" => code }} = response_json(conn.resp_body)
       assert conn.state == :sent
       assert conn.status == 200
-      assert response_json(conn.resp_body) == %{
-        "message" => "ok",
-        "data" => %{
-          "id" => user.id,
-          "email" => user.email
-        }
+      assert is_binary(code)
+    end
+
+    test "response user when user credentials and OTP code are good", %{user: user} do
+      credentials = %{
+        email: @current_user_attrs.email,
+        password: @current_user_attrs.password
       }
+      conn = post("/api/auth/login", credentials)
+      %{"data" => %{ "code" => code }} = response_json(conn.resp_body)
+      conn = post("/api/auth/login", Map.put(credentials, :code, code))
+      assert conn.status == 401
+      assert response_json(conn.resp_body) == %{"message" => "token"}
     end
   end
 
