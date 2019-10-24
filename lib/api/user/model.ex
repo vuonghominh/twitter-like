@@ -1,9 +1,6 @@
 defmodule Api.User.Model do
   use Api, :model
 
-  alias App.Repo
-  alias __MODULE__
-
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true
@@ -12,24 +9,11 @@ defmodule Api.User.Model do
     timestamps()
   end
 
-  @doc """
-  Creates a user.
-  ## Examples
-      iex> create_user(%{field: value})
-      {:ok, %Schema{}}
-      iex> create_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-  """
-  def create_user(attrs \\ %{}) do
-    %Model{}
-    |> changeset(attrs)
-    |> Repo.insert()
-  end
-
-  defp changeset(user, attrs) do
+  def changeset(user, attrs) do
     user
     |> cast(attrs, [:email,:password])
     |> validate_required([:email, :password])
+    |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> secure_password()
   end

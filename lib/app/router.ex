@@ -1,9 +1,9 @@
 defmodule App.Router do
   use Plug.Router
+  use Plug.ErrorHandler
   if Mix.env == :dev do
     use Plug.Debugger
   end
-  use Plug.ErrorHandler
 
   alias Api.Router, as: ApiRouter
 

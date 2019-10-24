@@ -1,7 +1,7 @@
 defmodule Api do
   def controller do
     quote do
-      import Plug.Conn
+      import Helper.Controller
     end
   end
 
