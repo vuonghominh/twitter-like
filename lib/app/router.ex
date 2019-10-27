@@ -12,11 +12,6 @@ defmodule App.Router do
     from: :app,
     gzip: false,
     only: ~w(static manifest.json css fonts images js favicon.ico robots.txt)
-  plug Plug.Logger
-  plug Plug.Parsers,
-    parsers: [:json],
-    pass: ["application/json"],
-    json_decoder: Poison
   plug :match
   plug :dispatch
 

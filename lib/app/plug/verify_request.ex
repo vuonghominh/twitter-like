@@ -37,7 +37,7 @@ defmodule App.Plug.VerifyRequest do
   end
 
   defp get_auth_header(conn) do
-    case get_req_header(conn, "token") do
+    case get_req_header(conn, "authorization") do
       [token] -> {conn, token}
       _ -> {conn}
     end

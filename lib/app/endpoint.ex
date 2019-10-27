@@ -3,6 +3,8 @@ defmodule App.Endpoint do
 
   use Plug.Router
 
+  plug Plug.Logger
+  plug CORSPlug, origin: "*"
   plug App.Router
 
   match _ do

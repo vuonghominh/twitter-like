@@ -35,7 +35,8 @@ defmodule App.MixProject do
       {:postgrex, "~> 0.15"},
       {:bcrypt_elixir, "~> 2.0"},
       {:pot, "~> 0.10.1"},
-      {:guardian, "~> 1.2"}
+      {:guardian, "~> 1.2"},
+      {:cors_plug, "~> 2.0"}
     ]
   end
 
