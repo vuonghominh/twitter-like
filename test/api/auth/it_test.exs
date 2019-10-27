@@ -12,6 +12,27 @@ defmodule Api.Auth.ItTest do
     user
   end
 
+  describe "Logout" do
+    setup [:create_user]
+
+    test "responses unauthorized" do
+      conn = post("/api/auth/logout")
+      assert conn.state == :sent
+      assert conn.status == 401
+      assert response_json(conn.resp_body) == %{"message" => "unauthorized"}
+    end
+
+    test "response ok and no more auth tokens in db", %{user: user} do
+      conn = post("/api/auth/logout", nil, Service.generate_auth_token(user))
+      assert conn.state == :sent
+      assert conn.status == 200
+      assert response_json(conn.resp_body) == %{"message" => "ok"}
+
+      user = Service.get_user_by_id(user.id)
+      assert length(user.auth_tokens) == 0
+    end
+  end
+
   describe "Login" do
     setup [:create_user]
 

@@ -18,9 +18,6 @@ defmodule Api do
   def router do
     quote do
       use Plug.Router
-
-      plug :match
-      plug :dispatch
     end
   end
 

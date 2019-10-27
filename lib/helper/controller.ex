@@ -1,5 +1,5 @@
 defmodule Helper.Controller do
-  import Plug.Conn
+  import Plug.Conn, only: [put_resp_content_type: 2, send_resp: 3]
 
   def json_response(conn, status, message \\ "ok", body \\ %{}) do
     resp_body = case body do

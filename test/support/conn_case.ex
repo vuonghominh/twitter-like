@@ -7,6 +7,7 @@ defmodule App.ConnCase do
   using do
     quote do
       import App.ConnCase
+      import Plug.Conn, only: [put_req_header: 3]
     end
   end
 
@@ -28,7 +29,7 @@ defmodule App.ConnCase do
     conn(:get, path) |> App.Endpoint.call(@opts)
   end
 
-  def post(path, body \\ %{}) do
-    conn(:post, path, body) |> App.Endpoint.call(@opts)
+  def post(path, body \\ %{}, token \\ "") do
+    conn(:post, path, body) |> put_req_header("token", token) |> App.Endpoint.call(@opts)
   end
 end
